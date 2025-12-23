@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "payments")
 public class Payment {
-
+    //todo Расходящиеся модификации 2.1
     public enum Status { SUCCESS, FAILED, PENDING }
 
     @Id

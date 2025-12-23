@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.UUID;
-
+//todo Посредник
 @Component
 @RequiredArgsConstructor
 public class SessionOrchestrator {

@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "films")
 public class Film {
-
+    //todo Расходящиеся модификации 2
     public enum AgeRating {
         ZERO_PLUS("0+"),
         SIX_PLUS("6+"),

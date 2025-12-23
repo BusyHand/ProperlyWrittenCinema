@@ -33,9 +33,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final TicketRepository ticketRepository;
     private final PurchaseMapper purchaseMapper;
-    
+    //todo Временное поле
     private String auditPurchaseStatus;
+    //todo Временное полеv
     private long auditPurchaseTimestamp;
+    //todo Временное поле
     private String auditPurchaseDetails;
 
     private static final int MAX_TICKETS_PER_PURCHASE = 50;

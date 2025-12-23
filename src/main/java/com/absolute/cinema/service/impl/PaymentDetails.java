@@ -3,7 +3,7 @@ package com.absolute.cinema.service.impl;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+//todo Класс данных
 @Data
 class PaymentDetails {
     private Long paymentId;

@@ -3,6 +3,8 @@ package com.absolute.cinema.service.impl;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
 
+// todo Альтернативные классы с раз-ми интерфейсами
+//todo Параллельные иерархии наследования
 @Component
 abstract class SessionValidator {
     

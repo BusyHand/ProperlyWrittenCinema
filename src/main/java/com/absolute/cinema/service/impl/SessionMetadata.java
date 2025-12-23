@@ -2,7 +2,7 @@ package com.absolute.cinema.service.impl;
 
 import lombok.Data;
 import java.util.UUID;
-
+//todo Класс данных
 @Data
 class SessionMetadata {
     private UUID sessionId;

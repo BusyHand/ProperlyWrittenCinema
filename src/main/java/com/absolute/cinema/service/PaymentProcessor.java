@@ -7,6 +7,7 @@ import com.absolute.cinema.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+//todo Посредник
 @Component
 @RequiredArgsConstructor
 public class PaymentProcessor {

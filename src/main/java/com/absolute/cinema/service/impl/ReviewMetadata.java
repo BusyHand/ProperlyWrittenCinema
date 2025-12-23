@@ -2,7 +2,7 @@ package com.absolute.cinema.service.impl;
 
 import lombok.Data;
 import java.time.LocalDateTime;
-
+//todo Класс данных
 @Data
 class ReviewMetadata {
     private Long reviewId;

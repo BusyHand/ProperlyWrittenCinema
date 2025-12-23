@@ -27,24 +27,26 @@ public class FilmServiceImpl implements FilmService {
     private final FilmMapper filmMapper;
     private final MediaService mediaService;
 
+    //todo Временное поле
     private UUID tempMediaValidationId;
+    //todo Временное поле
     private Boolean tempMediaValidationResult;
+    //todo Временное поле
     private String tempValidationErrorMsg;
 
     @Override
     public FilmPagedListDTO getFilms(Integer page, Integer limit) {
-
+        // todo single-responsibility
         if (page < 0) throw new BadRequestException("Page index is less than 0");
         if (limit < 1) throw new BadRequestException("Page size is less than 1");
 
         Pageable pageable = PageRequest.of(page, limit);
 
         Page<Film> filmsPage = filmRepository.findAll(pageable);
-
+        // todo single-responsibility
         List<FilmDTO> filmDTOs = filmsPage.getContent().stream()
                 .map(filmMapper::toDTO)
                 .collect(Collectors.toList());
-
         PageDTO pageDTO = new PageDTO(
                 page,
                 limit,
@@ -58,7 +60,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmDTO createFilm(CreateFilmDTO createFilmDTO) {
         Film film = filmMapper.toFilm(createFilmDTO);
-        
+        // todo single-responsibility
         if (createFilmDTO.posterId() != null) {
             tempMediaValidationId = createFilmDTO.posterId();
             tempMediaValidationResult = false;

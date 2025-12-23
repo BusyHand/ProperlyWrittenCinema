@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
+//todo Посредник
 @Component
 @RequiredArgsConstructor
 public class ReviewManager {

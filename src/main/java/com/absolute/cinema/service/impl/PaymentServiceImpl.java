@@ -36,15 +36,19 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final EmailSenderService emailSenderService;
     private final JavaMailSender javaMailSender;
+    //todo Временное поле
     private final Random random = new Random();
-    
+    //todo Временное поле
     private String auditPaymentStatus;
+    //todo Временное поле
     private long auditPaymentTimestamp;
+    //todo Временное поле
     private String auditPaymentDetails;
 
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_FAILED = "FAILED";
     private static final String STATUS_PENDING = "PENDING";
+
     private static final int PAYMENT_RETRY_ATTEMPTS = 3;
     private static final int EMAIL_SEND_TIMEOUT_MS = 5000;
     private static final int MAX_PAYMENT_AMOUNT_CENTS = 999999999;
@@ -84,6 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         // Handle the payment status with a series of conditional checks
+        //todo Расходящиеся модификации 2.1
         if (randomStatus == Payment.Status.SUCCESS) {
             // If successful, set purchase status to PAID
             purchase.setStatus(Purchase.Status.PAID);
@@ -205,7 +210,7 @@ public class PaymentServiceImpl implements PaymentService {
         // Map the payment entity to a status DTO and return it
         return paymentMapper.toStatusDTO(payment);
     }
-
+    //todo Группы данных
     @Override
     public PaymentResponseDTO processPaymentWithDetails(
             String purchaseId, 

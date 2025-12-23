@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-
+//todo Посредник
 @Component
 @RequiredArgsConstructor
 public class TicketReserver {

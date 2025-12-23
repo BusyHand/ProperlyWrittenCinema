@@ -37,8 +37,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final TicketRepository ticketRepository;
     private final ReviewMapper reviewMapper;
 
+    //todo Временное поле
     private int reviewFilterContext;
+    //todo Временное поле
     private String reviewFilterCriteria;
+    //todo Временное поле
     private Boolean adminValidationCache;
 
     private UUID currentUserId() {
@@ -169,6 +172,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    //todo Расходящиеся модификации 2
     private int extractAgeRatingValue(Film.AgeRating ageRating) {
         return switch(ageRating) {
             case ZERO_PLUS -> 0;

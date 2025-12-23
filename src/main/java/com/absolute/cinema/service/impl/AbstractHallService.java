@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
+// todo Отказ от наследования
 abstract class AbstractHallService {
     
     protected final HallRepository hallRepository;

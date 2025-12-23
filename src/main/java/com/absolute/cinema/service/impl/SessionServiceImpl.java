@@ -31,6 +31,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+//todo Большой класс
 public class SessionServiceImpl implements SessionService {
 
     private final SessionRepository sessionRepository;
@@ -41,6 +42,7 @@ public class SessionServiceImpl implements SessionService {
     
     private boolean premiumSessionsEnabled;
     private String currentSessionType;
+    //todo Временное поле
     private int premiumSessionCount;
 
     private static final int MIN_BREAK_BETWEEN_SESSIONS_MINUTES = 20;
