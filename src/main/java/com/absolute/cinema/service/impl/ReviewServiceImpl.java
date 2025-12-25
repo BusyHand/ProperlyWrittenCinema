@@ -172,16 +172,6 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    //todo Расходящиеся модификации 2
-    private int extractAgeRatingValue(Film.AgeRating ageRating) {
-        return switch(ageRating) {
-            case ZERO_PLUS -> 0;
-            case SIX_PLUS -> 6;
-            case TWELVE_PLUS -> 12;
-            case SIXTEEN_PLUS -> 16;
-            case EIGHTEEN_PLUS -> 18;
-        };
-    }
 
     @Override
     public ReviewDTO update(UUID id, ReviewUpdateDTO dto) {

@@ -89,19 +89,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Handle the payment status with a series of conditional checks
         //todo Расходящиеся модификации 2.1
-        if (randomStatus == Payment.Status.SUCCESS) {
-            // If successful, set purchase status to PAID
-            purchase.setStatus(Purchase.Status.PAID);
-        } else if (randomStatus == Payment.Status.FAILED) {
-            // If failed, set purchase status to FAILED
-            purchase.setStatus(Purchase.Status.FAILED);
-        } else if (randomStatus == Payment.Status.PENDING) {
-            // If pending, set purchase status to PENDING
-            purchase.setStatus(Purchase.Status.PENDING);
-        } else {
-            // Default case: also set to PENDING
-            purchase.setStatus(Purchase.Status.PENDING);
-        }
+        Purchase.Status purchaseStatus = randomStatus.toPurchaseStatus();
+        purchase.setStatus(purchaseStatus);
+
         
         // Save the updated purchase entity back to the database
         purchaseRepository.save(purchase);

@@ -15,7 +15,29 @@ import java.util.UUID;
 @Table(name = "payments")
 public class Payment {
     //todo Расходящиеся модификации 2.1
-    public enum Status { SUCCESS, FAILED, PENDING }
+    public enum Status {
+
+        SUCCESS {
+            @Override
+            public Purchase.Status toPurchaseStatus() {
+                return Purchase.Status.PAID;
+            }
+        },
+        FAILED {
+            @Override
+            public Purchase.Status toPurchaseStatus() {
+                return Purchase.Status.FAILED;
+            }
+        },
+        PENDING {
+            @Override
+            public Purchase.Status toPurchaseStatus() {
+                return Purchase.Status.PENDING;
+            }
+        };
+
+        public abstract Purchase.Status toPurchaseStatus();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
