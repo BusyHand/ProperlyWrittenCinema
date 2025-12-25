@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -36,15 +37,6 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final EmailSenderService emailSenderService;
     private final JavaMailSender javaMailSender;
-    //todo Временное поле
-    private final Random random = new Random();
-    //todo Временное поле
-    private String auditPaymentStatus;
-    //todo Временное поле
-    private long auditPaymentTimestamp;
-    //todo Временное поле
-    private String auditPaymentDetails;
-
     private static final String STATUS_SUCCESS = "SUCCESS";
     private static final String STATUS_FAILED = "FAILED";
     private static final String STATUS_PENDING = "PENDING";
@@ -367,7 +359,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment.Status[] statuses = Payment.Status.values();
         // Generate a random index within the array bounds
         // Return the status at that random index
-        return statuses[random.nextInt(statuses.length)];
+        return statuses[ThreadLocalRandom.current().nextInt(statuses.length)];
     }
 
     // Helper method to update the purchase status based on payment status
@@ -394,14 +386,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     // Helper method to log payment transaction details to audit fields
     private void logPaymentTransaction(UUID paymentId, String status, String details) {
-        // Store the payment status in the audit field
-        auditPaymentStatus = status;
-        // Store the current timestamp in the audit field
-        auditPaymentTimestamp = System.currentTimeMillis();
-        // Store the payment details in the audit field
-        auditPaymentDetails = details;
         // Print the audit log to console with timestamp, payment ID, and status
-        System.out.println("PAYMENT_AUDIT [" + auditPaymentTimestamp + "]: Payment " + paymentId + " - Status: " + status);
+        System.out.println("PAYMENT_AUDIT [" + System.currentTimeMillis() + "]: Payment " + paymentId + " - Status: " + status);
     }
 
     // Helper method to audit payment creation events

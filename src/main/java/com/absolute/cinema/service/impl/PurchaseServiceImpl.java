@@ -33,12 +33,6 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final TicketRepository ticketRepository;
     private final PurchaseMapper purchaseMapper;
-    //todo Временное поле
-    private String auditPurchaseStatus;
-    //todo Временное полеv
-    private long auditPurchaseTimestamp;
-    //todo Временное поле
-    private String auditPurchaseDetails;
 
     private static final int MAX_TICKETS_PER_PURCHASE = 50;
     private static final int MIN_PURCHASE_AMOUNT_CENTS = 100;
@@ -342,10 +336,7 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     private void logPurchaseTransaction(UUID purchaseId, String status, String details) {
-        auditPurchaseStatus = status;
-        auditPurchaseTimestamp = System.currentTimeMillis();
-        auditPurchaseDetails = details;
-        System.out.println("PURCHASE_AUDIT [" + auditPurchaseTimestamp + "]: Purchase " + purchaseId + " - Status: " + status);
+        System.out.println("PURCHASE_AUDIT [" + System.currentTimeMillis() + "]: Purchase " + purchaseId + " - Status: " + status);
     }
 
     private void auditPurchaseCreation(UUID purchaseId, UUID clientId, int totalAmount) {

@@ -27,13 +27,6 @@ public class FilmServiceImpl implements FilmService {
     private final FilmMapper filmMapper;
     private final MediaService mediaService;
 
-    //todo Временное поле
-    private UUID tempMediaValidationId;
-    //todo Временное поле
-    private Boolean tempMediaValidationResult;
-    //todo Временное поле
-    private String tempValidationErrorMsg;
-
     @Override
     public FilmPagedListDTO getFilms(Integer page, Integer limit) {
         // todo single-responsibility
@@ -62,21 +55,15 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmMapper.toFilm(createFilmDTO);
         // todo single-responsibility
         if (createFilmDTO.posterId() != null) {
-            tempMediaValidationId = createFilmDTO.posterId();
-            tempMediaValidationResult = false;
-            tempValidationErrorMsg = "";
-            
+
             try {
                 Media poster = validatePoster(createFilmDTO.posterId());
-                tempMediaValidationResult = true;
                 film.setPoster(poster);
             } catch (Exception e) {
-                tempMediaValidationResult = false;
-                tempValidationErrorMsg = e.getMessage();
                 throw e;
             }
         }
-        
+
         return filmMapper.toDTO(filmRepository.save(film));
     }
 
@@ -96,23 +83,15 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Film with id: %s not found", id))
         );
-
         film.setTitle(updateFilmDTO.title());
         film.setDescription(updateFilmDTO.description());
         film.setDurationMinutes(updateFilmDTO.durationMinutes());
         film.setAgeRating(updateFilmDTO.ageRating());
-        
+        film.setPoster(null);
+
         if (updateFilmDTO.posterId() != null) {
-            tempMediaValidationId = updateFilmDTO.posterId();
-            tempMediaValidationResult = false;
-            
-            if (tempMediaValidationResult == Boolean.FALSE) {
-                Media poster = validatePoster(updateFilmDTO.posterId());
-                tempMediaValidationResult = true;
-                film.setPoster(poster);
-            }
-        } else {
-            film.setPoster(null);
+            Media poster = validatePoster(updateFilmDTO.posterId());
+            film.setPoster(poster);
         }
 
         return filmMapper.toDTO(filmRepository.save(film));
@@ -127,26 +106,14 @@ public class FilmServiceImpl implements FilmService {
 
         filmRepository.deleteById(id);
     }
-    
+
     private Media validatePoster(UUID posterId) {
         Media media = mediaService.getMediaById(posterId);
-        
+
         if (media.getMediaType() != Media.MediaType.IMAGE) {
             throw new BadRequestException("Media with ID " + posterId + " is not an image. Only images can be used as posters.");
         }
-        
+
         return media;
-    }
-
-    public String getLastValidationError() {
-        return tempValidationErrorMsg;
-    }
-
-    public UUID getLastValidatedMediaId() {
-        return tempMediaValidationId;
-    }
-
-    public Boolean getLastValidationResult() {
-        return tempMediaValidationResult;
     }
 }

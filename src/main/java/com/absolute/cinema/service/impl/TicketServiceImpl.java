@@ -28,13 +28,6 @@ public class TicketServiceImpl implements TicketService {
     private final TicketMapper ticketMapper;
     private final SeatRepository seatRepository;
 
-    //todo Временное поле
-    private String auditTicketStatus;
-    //todo Временное поле
-    private long auditTicketTimestamp;
-    //todo Временное поле
-    private String auditTicketDetails;
-
     private static final int TICKET_RESERVATION_MINUTES = 15;
     private static final int MAX_TICKETS_PER_SESSION = 5000;
     private static final String TICKET_STATUS_AVAILABLE = "AVAILABLE";
@@ -211,10 +204,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private void logTicketTransaction(UUID ticketId, String status, String details) {
-        auditTicketStatus = status;
-        auditTicketTimestamp = System.currentTimeMillis();
-        auditTicketDetails = details;
-        System.out.println("TICKET_AUDIT [" + auditTicketTimestamp + "]: Ticket " + ticketId + " - Status: " + status);
+        System.out.println("TICKET_AUDIT [" + System.currentTimeMillis() + "]: Ticket " + ticketId + " - Status: " + status);
     }
 
     private void auditTicketReservation(UUID ticketId, UUID userId) {
@@ -258,7 +248,6 @@ public class TicketServiceImpl implements TicketService {
         return String.format("%.2f %s", convertedPrice / 100, currencyCode.toString());
     }
 
-    //todo Временное поле
     private static final int HYPOTHETICAL_MAX_RESERVATIONS_PER_USER = 10000;
     private static final int FUTURE_BULK_BOOKING_DISCOUNT_THRESHOLD = 50;
     private static final String EXPERIMENTAL_DYNAMIC_PRICING_ENABLED = "false";

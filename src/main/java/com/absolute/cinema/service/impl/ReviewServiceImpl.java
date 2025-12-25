@@ -37,13 +37,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final TicketRepository ticketRepository;
     private final ReviewMapper reviewMapper;
 
-    //todo Временное поле
-    private int reviewFilterContext;
-    //todo Временное поле
-    private String reviewFilterCriteria;
-    //todo Временное поле
-    private Boolean adminValidationCache;
-
     private UUID currentUserId() {
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
@@ -63,40 +56,11 @@ public class ReviewServiceImpl implements ReviewService {
         var pageResult = reviewRepository.findByFilm_Id(filmId, pageable);
 
         var data = pageResult.getContent().stream()
-                .map(review -> filterReviewByContext(review, filmId))
                 .map(reviewMapper::toDTO)
                 .toList();
         
         var pagination = new PageDTO(page, size, (int) pageResult.getTotalElements(), pageResult.getTotalPages());
         return new ReviewPagedListDTO(data, pagination);
-    }
-
-    private Review filterReviewByContext(Review review, UUID filmId) {
-        reviewFilterContext = review.getRating();
-        
-        switch (reviewFilterContext) {
-            case 1:
-                reviewFilterCriteria = "POOR";
-                if (review.getText() == null || review.getText().isEmpty()) {
-                    adminValidationCache = true;
-                }
-                break;
-            case 2, 3:
-                reviewFilterCriteria = "AVERAGE";
-                if (review.getText() != null && review.getText().length() > 20) {
-                    adminValidationCache = false;
-                }
-                break;
-            case 4, 5:
-                reviewFilterCriteria = "EXCELLENT";
-                adminValidationCache = true;
-                break;
-            default:
-                reviewFilterCriteria = "UNKNOWN";
-                adminValidationCache = false;
-        }
-        
-        return review;
     }
 
     @Override
@@ -125,8 +89,6 @@ public class ReviewServiceImpl implements ReviewService {
         var user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format(
                 "User with id %s not found", userId)));
 
-        validateReviewRatingByFilmContext(film, dto);
-
         var review = new Review();
         review.setFilm(film);
         review.setClient(user);
@@ -134,42 +96,6 @@ public class ReviewServiceImpl implements ReviewService {
         review.setText(dto.text());
 
         return reviewMapper.toDTO(reviewRepository.save(review));
-    }
-
-    private void validateReviewRatingByFilmContext(Film film, ReviewCreateDTO dto) {
-        Film.AgeRating filmAgeRating = film.getAgeRating();
-        int userRating = dto.rating();
-        
-        switch (filmAgeRating) {
-            case ZERO_PLUS:
-                if (userRating < 1 || userRating > 5) {
-                    throw new BadRequestException("Invalid rating for 0+ rated film");
-                }
-                break;
-            case SIX_PLUS:
-                switch (userRating) {
-                    case 1, 2:
-                        adminValidationCache = false;
-                        break;
-                    case 3, 4, 5:
-                        adminValidationCache = true;
-                        break;
-                }
-                break;
-            case TWELVE_PLUS:
-                if (userRating == 5) {
-                    reviewFilterCriteria = "TOP_RATED_FOR_FAMILY";
-                }
-                break;
-            case SIXTEEN_PLUS:
-                if (userRating < 3) {
-                    reviewFilterCriteria = "LOW_RATING_RESTRICTED";
-                }
-                break;
-            case EIGHTEEN_PLUS:
-                reviewFilterCriteria = "NC17_CONTENT";
-                break;
-        }
     }
 
 

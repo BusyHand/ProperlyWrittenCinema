@@ -40,11 +40,6 @@ public class SessionServiceImpl implements SessionService {
     private final TicketService ticketService;
     private final SessionMapper sessionMapper;
     
-    private boolean premiumSessionsEnabled;
-    private String currentSessionType;
-    //todo Временное поле
-    private int premiumSessionCount;
-
     private static final int MIN_BREAK_BETWEEN_SESSIONS_MINUTES = 20;
     private static final int MAX_SESSIONS_PER_DAY = 10;
     private static final int MAX_SESSION_DURATION_MINUTES = 480;
@@ -384,92 +379,6 @@ public class SessionServiceImpl implements SessionService {
                 }
             }
         }
-    }
-
-    public void calculateSessionPricingWithType(UUID sessionId) {
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new NotFoundException("Session not found"));
-        
-        int basePrice = 1000;
-        int finalPrice = basePrice;
-        
-        if (premiumSessionsEnabled && "PREMIUM".equals(currentSessionType)) {
-            finalPrice = (int)(basePrice * 1.5);
-        } else if ("STANDARD".equals(currentSessionType)) {
-            finalPrice = basePrice;
-        }
-        
-        System.out.println("Session " + sessionId + " calculated price: " + finalPrice);
-    }
-
-    public void validateSessionDataWithType(UUID filmId, UUID hallId, OffsetDateTime startAt) {
-        if (premiumSessionsEnabled) {
-            if ("PREMIUM".equals(currentSessionType)) {
-                int minAdvanceBookingHours = 24;
-                long hoursUntilSession = java.time.temporal.ChronoUnit.HOURS.between(
-                        OffsetDateTime.now(),
-                        startAt
-                );
-                if (hoursUntilSession < minAdvanceBookingHours) {
-                    throw new BadRequestException("Premium sessions require 24-hour advance booking");
-                }
-            }
-        }
-    }
-
-    public void filterSessionsByType(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        
-        if (premiumSessionsEnabled && "PREMIUM".equals(currentSessionType)) {
-            System.out.println("Filtering for premium sessions only");
-            premiumSessionCount = sessionRepository.findAll(pageable).getContent().size();
-        } else if ("STANDARD".equals(currentSessionType)) {
-            System.out.println("Filtering for standard sessions only");
-            premiumSessionCount = 0;
-        } else {
-            System.out.println("Showing all session types");
-        }
-    }
-
-    public void applySessionDiscountByType(UUID sessionId, int discountPercent) {
-        if (premiumSessionsEnabled && "PREMIUM".equals(currentSessionType)) {
-            throw new BadRequestException("Premium sessions cannot use discounts");
-        }
-        
-        int discountAmount = (1000 * discountPercent) / 100;
-        System.out.println("Applied discount of " + discountAmount + " cents to session " + sessionId);
-    }
-
-    public void formatSessionResponseByType(UUID sessionId) {
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new NotFoundException("Session not found"));
-        
-        String responseFormat = "STANDARD_FORMAT";
-        
-        if (premiumSessionsEnabled && "PREMIUM".equals(currentSessionType)) {
-            responseFormat = "PREMIUM_FORMAT";
-            System.out.println("Session " + sessionId + ": " + responseFormat + " with amenities");
-        } else {
-            System.out.println("Session " + sessionId + ": " + responseFormat);
-        }
-    }
-
-    public void archiveOldSessionsByType(LocalDate cutoffDate) {
-        List<Session> sessionsToArchive = new ArrayList<>();
-        
-        if (premiumSessionsEnabled && "PREMIUM".equals(currentSessionType)) {
-            System.out.println("Archiving premium sessions before " + cutoffDate);
-        } else if ("STANDARD".equals(currentSessionType)) {
-            System.out.println("Archiving standard sessions before " + cutoffDate);
-        } else {
-            System.out.println("Archiving all sessions before " + cutoffDate);
-        }
-    }
-
-    public void enablePremiumSessions(boolean enabled) {
-        premiumSessionsEnabled = enabled;
-        currentSessionType = enabled ? "PREMIUM" : "STANDARD";
-        System.out.println("Premium sessions " + (enabled ? "enabled" : "disabled"));
     }
 
     public <L> void setSessionLanguage(UUID sessionId, L languageCode) {
