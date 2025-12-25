@@ -8,8 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CinemaApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CinemaApplication.class, args);
-	}
-    //todo
+    public static void main(String[] args) {
+        SpringApplication.run(CinemaApplication.class, args);
+    }
 }
